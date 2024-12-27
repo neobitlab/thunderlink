@@ -38,6 +38,7 @@ namespace Thunderlink.Endpoints
             {
                 var units = await context.Station
                     .AsNoTracking()
+                    .OrderBy(s => s.StationID)
                     .Skip((page.GetValueOrDefault(1) - 1) * size.GetValueOrDefault(10))
                     .Take(size.GetValueOrDefault(10))
                     .ToListAsync();

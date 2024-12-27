@@ -41,6 +41,7 @@ namespace Thunderlink.Endpoints
                 var records = await context.Patient
                     .AsNoTracking()
                     .Include(p => p.Sensor)
+                    .OrderBy(p => p.PatientID)
                     .Skip((page.GetValueOrDefault(1) - 1) * size.GetValueOrDefault(10))
                     .Take(size.GetValueOrDefault(10))
                     .ToListAsync();
@@ -53,7 +54,28 @@ namespace Thunderlink.Endpoints
                 var record = await context.Patient
                     .AsNoTracking()
                     .Include(p => p.Sensor)
-                    .Include (p => p.Station)
+                    .Include(p => p.Station)
+                    .Select(p => new
+                    {
+                        p.PatientID,
+                        p.Name,
+                        p.Birthdate,
+                        p.Room,
+                        p.Wing,
+                        p.Admission,
+                        Sensor = p.Sensor.Select(s => new
+                        {
+                            s.SensorID,
+                            s.SensorType,
+                            s.SensorData,
+                            s.Status
+                        }),
+                        Station = new
+                        {
+                            p.Station.StationID,
+                            p.Station.Status
+                        }
+                    })
                     .FirstOrDefaultAsync(p => p.PatientID == id);
 
                 if (record == null)

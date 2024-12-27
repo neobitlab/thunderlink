@@ -38,6 +38,7 @@ namespace Thunderlink.Endpoints
             {
                 var units = await context.Sensor
                     .AsNoTracking()
+                    .OrderBy(s => s.SensorID)
                     .Skip((page.GetValueOrDefault(1) - 1) * size.GetValueOrDefault(10))
                     .Take(size.GetValueOrDefault(10))
                     .ToListAsync();
