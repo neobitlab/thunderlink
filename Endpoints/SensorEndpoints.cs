@@ -46,7 +46,7 @@ namespace Thunderlink.Endpoints
                 return Results.Ok(units);
             });
 
-            app.MapGet("/data/sensor/{id}", async (ThunderlinkData context, string id) =>
+            app.MapGet("/data/sensors/{id}", async (ThunderlinkData context, string id) =>
             {
                 var unit = await context.Sensor.FindAsync(id);
                 if (unit == null)
