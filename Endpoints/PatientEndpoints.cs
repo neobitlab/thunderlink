@@ -11,14 +11,31 @@ namespace Thunderlink.Endpoints
 
             app.MapPost("/data/patients", async (ThunderlinkData context, Patient record) =>
             {
-                if (string.IsNullOrWhiteSpace(record.PatientID))
-                    return Results.BadRequest(new { Message = "PatientID field is required." });
+                
 
-                context.Patient.Add(record);
-                await context.SaveChangesAsync();
+                using var transaction = await context.Database.BeginTransactionAsync();
 
-                return Results.Created($"/data/patients/{record.PatientID}", new { Message = "Patient record created successfully." });
+                try
+                {
+                    int nextIndex = await context.Patient.MaxAsync(p => (int?)p.Index) ?? 0;
+                    record.Index = nextIndex + 1;
+
+                    record.PatientID = $"P{record.Age:D2}{record.Gender}{record.Severity}-{record.Index:D4}";
+                    record.Admission = DateTime.Now;
+
+                    context.Patient.Add(record);
+                    await context.SaveChangesAsync();
+                    await transaction.CommitAsync();
+
+                    return Garmr.NeoGuard(record.Age, record.Gender, record.Severity, record.PatientID);
+                }
+                catch (Exception ex)
+                {
+                    await transaction.RollbackAsync();
+                    return Results.Json(new { Message = "An error occurred while processing the request.", Error = ex.Message }, statusCode: 500);
+                }
             });
+
 
             app.MapPatch("/data/patients/{id}", async (ThunderlinkData context, string id, Patient record) =>
             {
@@ -27,7 +44,7 @@ namespace Thunderlink.Endpoints
                     return Results.NotFound(new { Message = "Sensor not found." });
 
                 current.Name = record.Name ?? current.Name;
-                current.Birthdate = record.Birthdate ?? current.Birthdate;
+                current.Age = record.Age != 0 ? record.Age : current.Age;
                 current.Room = record.Room ?? current.Room;
                 current.Wing = record.Wing ?? current.Wing;
                 current.Admission = record.Admission ?? current.Admission;
@@ -59,7 +76,7 @@ namespace Thunderlink.Endpoints
                     {
                         p.PatientID,
                         p.Name,
-                        p.Birthdate,
+                        p.Age,
                         p.Room,
                         p.Wing,
                         p.Admission,

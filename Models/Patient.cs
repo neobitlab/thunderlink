@@ -5,11 +5,17 @@ namespace Thunderlink.Models
     public class Patient
     {
         [Key]
-        public required string PatientID { get; set; }
+        public string? PatientID { get; set; }
+        [Required]
+        public int Age { get; set; }
+        [Required]
+        public char Gender { get; set; }
+        [Required]
+        public int Severity { get; set; }
+
+        public int Index { get; set; }
 
         public string? Name { get; set; }
-
-        public DateTime? Birthdate { get; set; }
 
         public string? Room { get; set; }
 
@@ -19,5 +25,7 @@ namespace Thunderlink.Models
 
         public ICollection<Sensor>? Sensor { get; set; }
         public Station? Station { get; set; }
+
     }
+
 }
