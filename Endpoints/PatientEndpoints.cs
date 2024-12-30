@@ -18,7 +18,7 @@ namespace Thunderlink.Endpoints
                     context.Patient.Add(record);
                     await context.SaveChangesAsync();
 
-                    return Garmr.NeoGuard(record.Age, record.Gender, record.Severity, record.PatientID);
+                    return Garmr.NeoGuard(record);
             });
 
 
