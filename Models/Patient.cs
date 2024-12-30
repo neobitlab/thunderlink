@@ -6,14 +6,9 @@ namespace Thunderlink.Models
     {
         [Key]
         public string? PatientID { get; set; }
-        [Required]
         public int Age { get; set; }
-        [Required]
         public char Gender { get; set; }
-        [Required]
         public int Severity { get; set; }
-
-        public int Index { get; set; }
 
         public string? Name { get; set; }
 
@@ -27,5 +22,6 @@ namespace Thunderlink.Models
         public Station? Station { get; set; }
 
     }
-
+    public enum Severity { T = 1, M = 2, G = 3, S = 4, C = 5 };
+    public enum Gender { XX = 'F', XY = 'M' };
 }

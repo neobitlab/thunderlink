@@ -1,5 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
+using Thunderlink.Data;
+using Thunderlink.Models;
 
 namespace Thunderlink.Endpoints
 {
@@ -41,6 +44,20 @@ namespace Thunderlink.Endpoints
 
             return Results.Created($"/data/patients/{id}", new { Message = "Patient record created successfully.", id });
 
+        }
+
+   
+        public static string NeoID(Patient record)
+        {
+
+        string UID = Convert.ToBase64String(Guid.NewGuid().ToByteArray())
+                   .Replace("/", "N")
+                   .Replace("+", "E")
+                   .Replace("=", "O")
+                   .Substring(0, 6)
+                   .ToUpper();
+
+            return $"P{record.Age:D2}{(Gender)record.Gender}-{(Severity)record.Severity}-{UID}";
         }
     }
 }

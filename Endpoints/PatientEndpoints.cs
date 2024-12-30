@@ -11,29 +11,14 @@ namespace Thunderlink.Endpoints
 
             app.MapPost("/data/patients", async (ThunderlinkData context, Patient record) =>
             {
-                
 
-                using var transaction = await context.Database.BeginTransactionAsync();
-
-                try
-                {
-                    int nextIndex = await context.Patient.MaxAsync(p => (int?)p.Index) ?? 0;
-                    record.Index = nextIndex + 1;
-
-                    record.PatientID = $"P{record.Age:D2}{record.Gender}{record.Severity}-{record.Index:D4}";
+                    record.PatientID = Garmr.NeoID(record);
                     record.Admission = DateTime.Now;
 
                     context.Patient.Add(record);
                     await context.SaveChangesAsync();
-                    await transaction.CommitAsync();
 
                     return Garmr.NeoGuard(record.Age, record.Gender, record.Severity, record.PatientID);
-                }
-                catch (Exception ex)
-                {
-                    await transaction.RollbackAsync();
-                    return Results.Json(new { Message = "An error occurred while processing the request.", Error = ex.Message }, statusCode: 500);
-                }
             });
 
 
@@ -41,7 +26,7 @@ namespace Thunderlink.Endpoints
             {
                 var current = await context.Patient.FindAsync(id);
                 if (current == null)
-                    return Results.NotFound(new { Message = "Sensor not found." });
+                    return Results.NotFound(new { Message = "Patient not found." });
 
                 current.Name = record.Name ?? current.Name;
                 current.Age = record.Age != 0 ? record.Age : current.Age;
