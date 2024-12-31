@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Thunderlink.Data;
 using Thunderlink.Models;
+using Thunderlink.Validation;
 
 namespace Thunderlink.Endpoints
 {
@@ -57,27 +58,6 @@ namespace Thunderlink.Endpoints
                     .AsNoTracking()
                     .Include(p => p.Sensor)
                     .Include(p => p.Station)
-                    .Select(p => new
-                    {
-                        p.PatientID,
-                        p.Name,
-                        p.Age,
-                        p.Room,
-                        p.Wing,
-                        p.Admission,
-                        Sensor = p.Sensor.Select(s => new
-                        {
-                            s.SensorID,
-                            s.SensorType,
-                            s.SensorData,
-                            s.Status
-                        }),
-                        Station = new
-                        {
-                            p.Station.StationID,
-                            p.Station.Status
-                        }
-                    })
                     .FirstOrDefaultAsync(p => p.PatientID == id);
 
                 if (record == null)

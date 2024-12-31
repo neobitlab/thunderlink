@@ -19,7 +19,5 @@ namespace Thunderlink.Models
         [ForeignKey("Patient")]
         public string? PatientID { get; set; }
         
-        [JsonIgnore]
-        public Patient? Patient { get; set; }
     }
 }

@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
-using Thunderlink.Data;
-using Thunderlink.Models;
+﻿using Thunderlink.Models;
 
-namespace Thunderlink.Endpoints
+namespace Thunderlink.Validation
 {
     public static class Garmr
     {
@@ -44,7 +40,7 @@ namespace Thunderlink.Endpoints
                                    new { Message = "Patient record created successfully.", record.PatientID });
         }
 
-   
+
         public static string NeoID(Patient record)
         {
 

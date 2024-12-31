@@ -14,12 +14,9 @@ namespace Thunderlink.Models
         public string? SensorData { get; set; }
 
         public string? Status { get; set; }
-        
-        [JsonIgnore]
         [ForeignKey("Patient")]
         public string? PatientID { get; set; }
 
-        [JsonIgnore]
         [ForeignKey("Station")]
         public string? StationID { get; set; }
     }

@@ -13,6 +13,8 @@ namespace Thunderlink.Endpoints
                 if (string.IsNullOrWhiteSpace(unit.StationID))
                     return Results.BadRequest(new { Message = "StationID field is required." });
 
+                unit.Timestamp = DateTime.Now;
+
                 context.Station.Add(unit);
                 await context.SaveChangesAsync();
 

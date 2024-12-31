@@ -12,6 +12,7 @@ namespace Thunderlink.Endpoints
                 if (string.IsNullOrWhiteSpace(unit.SensorID))
                     return Results.BadRequest(new { Message = "SensorID field is required." });
 
+
                 context.Sensor.Add(unit);
                 await context.SaveChangesAsync();
 
