@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Thunderlink.Data;
 using Thunderlink.Models;
 using Thunderlink.Validation;
@@ -12,14 +13,17 @@ namespace Thunderlink.Endpoints
 
             app.MapPost("/data/patients", async (ThunderlinkData context, Patient record) =>
             {
+                var pass = Garmr.NeoGuard(record);
+                if (pass is not Accepted) return pass;
+                
+                record.PatientID = Garmr.NeoID(record);
+                record.Admission = DateTime.Now;
 
-                    record.PatientID = Garmr.NeoID(record);
-                    record.Admission = DateTime.Now;
+                context.Patient.Add(record);
+                await context.SaveChangesAsync();
 
-                    context.Patient.Add(record);
-                    await context.SaveChangesAsync();
-
-                    return Garmr.NeoGuard(record);
+                return Results.Created($"Patient record created successfully.",
+                    new { url = $"/data/patients/{record.PatientID}", record.PatientID });
             });
 
 

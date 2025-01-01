@@ -35,9 +35,7 @@ namespace Thunderlink.Validation
             if (record.Severity > 5)
                 return Results.BadRequest(new { Message = "Severity must be a value between 1 and 5." });
 
-            // If all validations pass
-            return Results.Created($"/data/patients/{record.PatientID}",
-                                   new { Message = "Patient record created successfully.", record.PatientID });
+            return Results.Accepted();
         }
 
 
@@ -49,7 +47,7 @@ namespace Thunderlink.Validation
                        .Replace("/", "N")
                        .Replace("+", "E")
                        .Replace("=", "O")
-                       .Substring(0, 6)
+                       .Substring(0, 8)
                        .ToUpper();
 
             //Generate PatientID
