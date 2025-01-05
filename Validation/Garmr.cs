@@ -6,7 +6,6 @@ namespace Thunderlink.Validation
     {
         public static IResult NeoGuard(Patient record)
         {
-
             // Validate age
             if (record.Age == 0)
                 return Results.BadRequest(new { Message = "Age cannot be zero and is required." });

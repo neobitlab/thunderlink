@@ -34,11 +34,9 @@ namespace Thunderlink.Endpoints
                     return Results.NotFound(new { Message = "Patient not found." });
 
                 current.Name = record.Name ?? current.Name;
-                current.Age = record.Age != 0 ? record.Age : current.Age;
                 current.Room = record.Room ?? current.Room;
                 current.Wing = record.Wing ?? current.Wing;
-                current.Admission = record.Admission ?? current.Admission;
-
+                
                 await context.SaveChangesAsync();
                 return Results.Ok(new { Message = "Patient record updated successfully." });
             });
